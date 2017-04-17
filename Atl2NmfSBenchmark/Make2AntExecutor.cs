@@ -30,7 +30,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             if(Directory.Exists("makeInputModels"))
                 Directory.Delete("makeInputModels", true);
 
-            var times = new long[sizes.Length, iterations, 4];
+            var times = new long[sizes.Length, iterations, 5];
 
             for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
             {
@@ -80,6 +80,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             var workload = MakeGenerator.GenerateChangeWorkload(makeModel, workloadSize);
             PlayBatchNet(times, sizeIdx, iteration, startRule, watch, ref inputBatchModelContainer, ref outputBatchModelContainer, workload);
             PlayIncremental(times, sizeIdx, iteration, watch, inputIncModelContainer, outputIncModelContainer, workload);
+            PlayChangesOnly(times, sizeIdx, iteration, watch, CopyMakeModel(makeModel), workload);
 
             var inputModelContainer = new InputModelContainer(CopyMakeModel(makeModel));
             var outputModelContainer = new OutputModelContainer(new Model());
@@ -121,6 +122,18 @@ namespace NMF.Synchronizations.ATLBenchmark
             watch.Stop();
 
             times[sizeIdx, iteration, 3] = watch.Elapsed.Ticks * 100;
+        }
+
+        private static void PlayChangesOnly(long[,,] times, int sizeIdx, int iteration, Stopwatch watch, Model inputModel, List<MakeWorkloadAction> workload)
+        {
+            watch.Restart();
+            foreach (var item in workload)
+            {
+                item.Perform(inputModel);
+            }
+            watch.Stop();
+
+            times[sizeIdx, iteration, 4] = watch.Elapsed.Ticks * 100;
         }
 
         private static void PlayBatchNet(long[,,] times, int sizeIdx, int iteration, Make2Ant.Model2ModelMainRule startRule, Stopwatch watch, ref InputModelContainer inputModelContainer, ref OutputModelContainer outputModelContainer, List<MakeWorkloadAction> workload)
@@ -231,7 +244,7 @@ namespace NMF.Synchronizations.ATLBenchmark
         {
             using (var sw = new StreamWriter("makeResults.csv"))
             {
-                sw.WriteLine("Size;Run;InitBatch;InitInc;UpdatesBatch;UpdatesInc");
+                sw.WriteLine("Size;Run;InitBatch;InitInc;UpdatesBatch;UpdatesInc;ChangesOnly");
                 for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
                 {
                     var n = sizes[sizeIdx];
@@ -240,7 +253,7 @@ namespace NMF.Synchronizations.ATLBenchmark
                         var batchTime = (times[sizeIdx, iteration, 0] + times[sizeIdx, iteration, 2]);
                         var incTime = (times[sizeIdx, iteration, 1] + times[sizeIdx, iteration, 3]);
 
-                        sw.WriteLine($"{n};{iteration};{times[sizeIdx, iteration, 0]};{times[sizeIdx, iteration, 1]};{times[sizeIdx, iteration, 2]};{times[sizeIdx, iteration, 3]}");
+                        sw.WriteLine($"{n};{iteration};{times[sizeIdx, iteration, 0]};{times[sizeIdx, iteration, 1]};{times[sizeIdx, iteration, 2]};{times[sizeIdx, iteration, 3]};{times[sizeIdx, iteration, 4]}");
                     }
                 }
             }

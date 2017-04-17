@@ -29,7 +29,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             if (Directory.Exists("familyInputModels"))
                 Directory.Delete("familyInputModels", true);
 
-            var times = new long[sizes.Length, iterations, 4];
+            var times = new long[sizes.Length, iterations, 5];
 
             for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
             {
@@ -60,7 +60,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             watch.Start();
             families2Persons.Synchronize(startRule, ref inputBatchModelContainer, ref outputBatchModelContainer, SynchronizationDirection.LeftToRight, ChangePropagationMode.None);
             watch.Stop();
-            times[sizeIdx, iteration, 0] = watch.ElapsedMilliseconds;
+            times[sizeIdx, iteration, 0] = watch.Elapsed.Ticks * 100;
 
             var inputIncModelContainer = new InputModelContainer(CopyFamilyModel(familiesModel));
             var outputIncModelContainer = new OutputModelContainer(new Model());
@@ -68,11 +68,12 @@ namespace NMF.Synchronizations.ATLBenchmark
             watch.Restart();
             families2Persons.Synchronize(startRule, ref inputIncModelContainer, ref outputIncModelContainer, SynchronizationDirection.LeftToRight, ChangePropagationMode.OneWay);
             watch.Stop();
-            times[sizeIdx, iteration, 1] = watch.ElapsedMilliseconds;
+            times[sizeIdx, iteration, 1] = watch.Elapsed.Ticks * 100;
 
             var workload = FamiliesGenerator.GenerateChangeWorkload(familiesModel, workloadSize);
             PlayBatchNet(times, sizeIdx, iteration, startRule, watch, ref inputBatchModelContainer, ref outputBatchModelContainer, workload);
             PlayIncremental(times, sizeIdx, iteration, watch, inputIncModelContainer, workload);
+            PlayChangesOnly(times, sizeIdx, iteration, watch, CopyFamilyModel(familiesModel), workload);
 
             var inputModelContainer = new InputModelContainer(CopyFamilyModel(familiesModel));
             var outputModelContainer = new OutputModelContainer(new Model());
@@ -107,7 +108,19 @@ namespace NMF.Synchronizations.ATLBenchmark
             }
             watch.Stop();
 
-            times[sizeIdx, iteration, 3] = watch.ElapsedMilliseconds;
+            times[sizeIdx, iteration, 3] = watch.Elapsed.Ticks * 100;
+        }
+
+        private static void PlayChangesOnly(long[,,] times, int sizeIdx, int iteration, Stopwatch watch, Model inputModel, List<FamilyWorkloadAction> workload)
+        {
+            watch.Restart();
+            foreach (var item in workload)
+            {
+                item.Perform(inputModel);
+            }
+            watch.Stop();
+
+            times[sizeIdx, iteration, 4] = watch.Elapsed.Ticks * 100;
         }
 
         private static void PlayBatchNet(long[,,] times, int sizeIdx, int iteration, Families2Persons.Model2ModelMainRule startRule, Stopwatch watch, ref InputModelContainer inputModelContainer, ref OutputModelContainer outputModelContainer, List<FamilyWorkloadAction> workload)
@@ -120,7 +133,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             }
             watch.Stop();
 
-            times[sizeIdx, iteration, 2] = watch.ElapsedMilliseconds;
+            times[sizeIdx, iteration, 2] = watch.Elapsed.Ticks * 100;
         }
 
         private static void RerunBatchSynchronization(Families2Persons.Model2ModelMainRule startRule, ref InputModelContainer inputModelContainer, ref OutputModelContainer outputModelContainer)
@@ -188,7 +201,7 @@ namespace NMF.Synchronizations.ATLBenchmark
         {
             using (var sw = new StreamWriter("familyResults.csv"))
             {
-                sw.WriteLine("Size;Run;InitBatch;InitInc;UpdatesBatch;UpdatesInc");
+                sw.WriteLine("Size;Run;InitBatch;InitInc;UpdatesBatch;UpdatesInc;ChangesOnly");
                 for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
                 {
                     var n = sizes[sizeIdx];
@@ -197,7 +210,7 @@ namespace NMF.Synchronizations.ATLBenchmark
                         var batchTime = (times[sizeIdx, iteration, 0] + times[sizeIdx, iteration, 2]);
                         var incTime = (times[sizeIdx, iteration, 1] + times[sizeIdx, iteration, 3]);
 
-                        sw.WriteLine($"{n};{iteration};{times[sizeIdx, iteration, 0]};{times[sizeIdx, iteration, 1]};{times[sizeIdx, iteration, 2]};{times[sizeIdx, iteration, 3]}");
+                        sw.WriteLine($"{n};{iteration};{times[sizeIdx, iteration, 0]};{times[sizeIdx, iteration, 1]};{times[sizeIdx, iteration, 2]};{times[sizeIdx, iteration, 3]};{times[sizeIdx, iteration, 4]}");
                     }
                 }
             }
