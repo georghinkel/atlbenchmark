@@ -27,6 +27,7 @@ namespace Make2AntNamespace.Make
     using NMF.Serialization;
     using NMF.Utilities;
     using NMF.Models.Meta;
+    using System.Collections.Specialized;
     using NMF.Models.Repository;
     
     
@@ -36,9 +37,9 @@ namespace Make2AntNamespace.Make
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile/")]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile")]
     [DebuggerDisplayAttribute("Makefile {Name}")]
-    public class Makefile : ModelElement, IMakefile, IModelElement
+    public partial class Makefile : ModelElement, IMakefile, IModelElement
     {
         
         /// <summary>
@@ -46,15 +47,23 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private string _name;
         
+        private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
+        
         /// <summary>
         /// The backing field for the ID property
         /// </summary>
         private string _iD;
         
+        private static Lazy<ITypedElement> _iDAttribute = new Lazy<ITypedElement>(RetrieveIDAttribute);
+        
+        private static Lazy<ITypedElement> _commentReference = new Lazy<ITypedElement>(RetrieveCommentReference);
+        
         /// <summary>
         /// The backing field for the Comment property
         /// </summary>
         private IComment _comment;
+        
+        private static Lazy<ITypedElement> _elementsReference = new Lazy<ITypedElement>(RetrieveElementsReference);
         
         /// <summary>
         /// The backing field for the Elements property
@@ -76,7 +85,7 @@ namespace Make2AntNamespace.Make
         [XmlElementNameAttribute("name")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
-        public virtual string Name
+        public string Name
         {
             get
             {
@@ -89,10 +98,10 @@ namespace Make2AntNamespace.Make
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnNameChanging(e);
-                    this.OnPropertyChanging("Name", e);
+                    this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
                     this.OnNameChanged(e);
-                    this.OnPropertyChanged("Name", e);
+                    this.OnPropertyChanged("Name", e, _nameAttribute);
                 }
             }
         }
@@ -101,7 +110,7 @@ namespace Make2AntNamespace.Make
         /// The ID property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string ID
+        public string ID
         {
             get
             {
@@ -114,10 +123,10 @@ namespace Make2AntNamespace.Make
                     string old = this._iD;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIDChanging(e);
-                    this.OnPropertyChanging("ID", e);
+                    this.OnPropertyChanging("ID", e, _iDAttribute);
                     this._iD = value;
                     this.OnIDChanged(e);
-                    this.OnPropertyChanged("ID", e);
+                    this.OnPropertyChanged("ID", e, _iDAttribute);
                 }
             }
         }
@@ -128,7 +137,7 @@ namespace Make2AntNamespace.Make
         [XmlElementNameAttribute("comment")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
-        public virtual IComment Comment
+        public IComment Comment
         {
             get
             {
@@ -141,7 +150,7 @@ namespace Make2AntNamespace.Make
                     IComment old = this._comment;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnCommentChanging(e);
-                    this.OnPropertyChanging("Comment", e);
+                    this.OnPropertyChanging("Comment", e, _commentReference);
                     this._comment = value;
                     if ((old != null))
                     {
@@ -154,7 +163,7 @@ namespace Make2AntNamespace.Make
                         value.Deleted += this.OnResetComment;
                     }
                     this.OnCommentChanged(e);
-                    this.OnPropertyChanged("Comment", e);
+                    this.OnPropertyChanged("Comment", e, _commentReference);
                 }
             }
         }
@@ -168,7 +177,7 @@ namespace Make2AntNamespace.Make
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IOrderedSetExpression<IElement> Elements
+        public IOrderedSetExpression<IElement> Elements
         {
             get
             {
@@ -207,7 +216,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile")));
                 }
                 return _classInstance;
             }
@@ -254,6 +263,11 @@ namespace Make2AntNamespace.Make
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> CommentChanged;
         
+        private static ITypedElement RetrieveNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Makefile.ClassInstance)).Resolve("name")));
+        }
+        
         /// <summary>
         /// Raises the NameChanging event
         /// </summary>
@@ -280,6 +294,11 @@ namespace Make2AntNamespace.Make
             }
         }
         
+        private static ITypedElement RetrieveIDAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Makefile.ClassInstance)).Resolve("ID")));
+        }
+        
         /// <summary>
         /// Raises the IDChanging event
         /// </summary>
@@ -304,6 +323,11 @@ namespace Make2AntNamespace.Make
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveCommentReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Makefile.ClassInstance)).Resolve("comment")));
         }
         
         /// <summary>
@@ -342,14 +366,19 @@ namespace Make2AntNamespace.Make
             this.Comment = null;
         }
         
+        private static ITypedElement RetrieveElementsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Makefile.ClassInstance)).Resolve("elements")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Elements property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ElementsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Elements", e);
+            this.OnCollectionChanging("Elements", e, _elementsReference);
         }
         
         /// <summary>
@@ -357,9 +386,9 @@ namespace Make2AntNamespace.Make
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ElementsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Elements", e);
+            this.OnCollectionChanged("Elements", e, _elementsReference);
         }
         
         /// <summary>
@@ -494,13 +523,27 @@ namespace Make2AntNamespace.Make
         }
         
         /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._elements))
+            {
+                return "elements";
+            }
+            return base.GetCompositionName(container);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Makefile")));
             }
             return _classInstance;
         }
@@ -837,7 +880,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IMakefile modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "name")
             {
             }
             
@@ -855,24 +898,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Name = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -886,7 +911,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IDProxy(IMakefile modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ID")
             {
             }
             
@@ -904,24 +929,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.ID = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -935,7 +942,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CommentProxy(IMakefile modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "comment")
             {
             }
             
@@ -953,24 +960,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Comment = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CommentChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CommentChanged -= handler;
-            }
         }
     }
     
@@ -980,9 +969,9 @@ namespace Make2AntNamespace.Make
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Element/")]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Element")]
     [DebuggerDisplayAttribute("Element {Name}")]
-    public abstract class Element : ModelElement, IElement, IModelElement
+    public abstract partial class Element : ModelElement, IElement, IModelElement
     {
         
         /// <summary>
@@ -990,10 +979,14 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private string _name;
         
+        private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
+        
         /// <summary>
         /// The backing field for the ID property
         /// </summary>
         private string _iD;
+        
+        private static Lazy<ITypedElement> _iDAttribute = new Lazy<ITypedElement>(RetrieveIDAttribute);
         
         private static IClass _classInstance;
         
@@ -1003,7 +996,7 @@ namespace Make2AntNamespace.Make
         [XmlElementNameAttribute("name")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
-        public virtual string Name
+        public string Name
         {
             get
             {
@@ -1016,10 +1009,10 @@ namespace Make2AntNamespace.Make
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnNameChanging(e);
-                    this.OnPropertyChanging("Name", e);
+                    this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
                     this.OnNameChanged(e);
-                    this.OnPropertyChanged("Name", e);
+                    this.OnPropertyChanged("Name", e, _nameAttribute);
                 }
             }
         }
@@ -1028,7 +1021,7 @@ namespace Make2AntNamespace.Make
         /// The ID property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string ID
+        public string ID
         {
             get
             {
@@ -1041,10 +1034,10 @@ namespace Make2AntNamespace.Make
                     string old = this._iD;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIDChanging(e);
-                    this.OnPropertyChanging("ID", e);
+                    this.OnPropertyChanging("ID", e, _iDAttribute);
                     this._iD = value;
                     this.OnIDChanged(e);
-                    this.OnPropertyChanged("ID", e);
+                    this.OnPropertyChanged("ID", e, _iDAttribute);
                 }
             }
         }
@@ -1058,7 +1051,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Element/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Element")));
                 }
                 return _classInstance;
             }
@@ -1095,6 +1088,11 @@ namespace Make2AntNamespace.Make
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IDChanged;
         
+        private static ITypedElement RetrieveNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Element.ClassInstance)).Resolve("name")));
+        }
+        
         /// <summary>
         /// Raises the NameChanging event
         /// </summary>
@@ -1119,6 +1117,11 @@ namespace Make2AntNamespace.Make
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveIDAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Element.ClassInstance)).Resolve("ID")));
         }
         
         /// <summary>
@@ -1193,7 +1196,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Element/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Element")));
             }
             return _classInstance;
         }
@@ -1222,7 +1225,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "name")
             {
             }
             
@@ -1240,24 +1243,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Name = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1271,7 +1256,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IDProxy(IElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ID")
             {
             }
             
@@ -1289,24 +1274,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.ID = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged -= handler;
-            }
         }
     }
     
@@ -1315,15 +1282,19 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Rule/")]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Rule")]
     [DebuggerDisplayAttribute("Rule {Name}")]
-    public class Rule : Element, IRule, IModelElement
+    public partial class Rule : Element, IRule, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _dependenciesReference = new Lazy<ITypedElement>(RetrieveDependenciesReference);
         
         /// <summary>
         /// The backing field for the Dependencies property
         /// </summary>
         private ObservableCompositionOrderedSet<IDependency> _dependencies;
+        
+        private static Lazy<ITypedElement> _shellLinesReference = new Lazy<ITypedElement>(RetrieveShellLinesReference);
         
         /// <summary>
         /// The backing field for the ShellLines property
@@ -1350,7 +1321,7 @@ namespace Make2AntNamespace.Make
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IOrderedSetExpression<IDependency> Dependencies
+        public IOrderedSetExpression<IDependency> Dependencies
         {
             get
             {
@@ -1368,7 +1339,7 @@ namespace Make2AntNamespace.Make
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ruleShellLine")]
         [ConstantAttribute()]
-        public virtual IOrderedSetExpression<IShellLine> ShellLines
+        public IOrderedSetExpression<IShellLine> ShellLines
         {
             get
             {
@@ -1407,10 +1378,15 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Rule/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Rule")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveDependenciesReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Rule.ClassInstance)).Resolve("dependencies")));
         }
         
         /// <summary>
@@ -1418,9 +1394,9 @@ namespace Make2AntNamespace.Make
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DependenciesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void DependenciesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Dependencies", e);
+            this.OnCollectionChanging("Dependencies", e, _dependenciesReference);
         }
         
         /// <summary>
@@ -1428,9 +1404,14 @@ namespace Make2AntNamespace.Make
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DependenciesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DependenciesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Dependencies", e);
+            this.OnCollectionChanged("Dependencies", e, _dependenciesReference);
+        }
+        
+        private static ITypedElement RetrieveShellLinesReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Rule.ClassInstance)).Resolve("shellLines")));
         }
         
         /// <summary>
@@ -1438,9 +1419,9 @@ namespace Make2AntNamespace.Make
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ShellLinesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ShellLinesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("ShellLines", e);
+            this.OnCollectionChanging("ShellLines", e, _shellLinesReference);
         }
         
         /// <summary>
@@ -1448,9 +1429,9 @@ namespace Make2AntNamespace.Make
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ShellLinesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ShellLinesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("ShellLines", e);
+            this.OnCollectionChanged("ShellLines", e, _shellLinesReference);
         }
         
         /// <summary>
@@ -1525,13 +1506,31 @@ namespace Make2AntNamespace.Make
         }
         
         /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._dependencies))
+            {
+                return "dependencies";
+            }
+            if ((container == this._shellLines))
+            {
+                return "shellLines";
+            }
+            return base.GetCompositionName(container);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Rule/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Rule")));
             }
             return _classInstance;
         }
@@ -1858,15 +1857,17 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Macro/")]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Macro")]
     [DebuggerDisplayAttribute("Macro {Name}")]
-    public class Macro : Element, IMacro, IModelElement
+    public partial class Macro : Element, IMacro, IModelElement
     {
         
         /// <summary>
         /// The backing field for the Value property
         /// </summary>
         private string _value;
+        
+        private static Lazy<ITypedElement> _valueAttribute = new Lazy<ITypedElement>(RetrieveValueAttribute);
         
         private static IClass _classInstance;
         
@@ -1875,7 +1876,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
-        public virtual string Value
+        public string Value
         {
             get
             {
@@ -1888,10 +1889,10 @@ namespace Make2AntNamespace.Make
                     string old = this._value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnValueChanging(e);
-                    this.OnPropertyChanging("Value", e);
+                    this.OnPropertyChanging("Value", e, _valueAttribute);
                     this._value = value;
                     this.OnValueChanged(e);
-                    this.OnPropertyChanged("Value", e);
+                    this.OnPropertyChanged("Value", e, _valueAttribute);
                 }
             }
         }
@@ -1905,7 +1906,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Macro/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Macro")));
                 }
                 return _classInstance;
             }
@@ -1920,6 +1921,11 @@ namespace Make2AntNamespace.Make
         /// Gets fired when the Value property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        
+        private static ITypedElement RetrieveValueAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Macro.ClassInstance)).Resolve("value")));
+        }
         
         /// <summary>
         /// Raises the ValueChanging event
@@ -1984,7 +1990,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Macro/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Macro")));
             }
             return _classInstance;
         }
@@ -2000,7 +2006,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IMacro modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "value")
             {
             }
             
@@ -2018,24 +2024,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Value = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged -= handler;
-            }
         }
     }
     
@@ -2044,8 +2032,8 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine/")]
-    public class ShellLine : ModelElement, IShellLine, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine")]
+    public partial class ShellLine : ModelElement, IShellLine, IModelElement
     {
         
         /// <summary>
@@ -2053,15 +2041,23 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private string _command;
         
+        private static Lazy<ITypedElement> _commandAttribute = new Lazy<ITypedElement>(RetrieveCommandAttribute);
+        
         /// <summary>
         /// The backing field for the Display property
         /// </summary>
         private bool _display;
         
+        private static Lazy<ITypedElement> _displayAttribute = new Lazy<ITypedElement>(RetrieveDisplayAttribute);
+        
         /// <summary>
         /// The backing field for the ID property
         /// </summary>
         private string _iD;
+        
+        private static Lazy<ITypedElement> _iDAttribute = new Lazy<ITypedElement>(RetrieveIDAttribute);
+        
+        private static Lazy<ITypedElement> _ruleShellLineReference = new Lazy<ITypedElement>(RetrieveRuleShellLineReference);
         
         private static IClass _classInstance;
         
@@ -2070,7 +2066,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("command")]
         [XmlAttributeAttribute(true)]
-        public virtual string Command
+        public string Command
         {
             get
             {
@@ -2083,10 +2079,10 @@ namespace Make2AntNamespace.Make
                     string old = this._command;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnCommandChanging(e);
-                    this.OnPropertyChanging("Command", e);
+                    this.OnPropertyChanging("Command", e, _commandAttribute);
                     this._command = value;
                     this.OnCommandChanged(e);
-                    this.OnPropertyChanged("Command", e);
+                    this.OnPropertyChanged("Command", e, _commandAttribute);
                 }
             }
         }
@@ -2096,7 +2092,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("display")]
         [XmlAttributeAttribute(true)]
-        public virtual bool Display
+        public bool Display
         {
             get
             {
@@ -2109,10 +2105,10 @@ namespace Make2AntNamespace.Make
                     bool old = this._display;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDisplayChanging(e);
-                    this.OnPropertyChanging("Display", e);
+                    this.OnPropertyChanging("Display", e, _displayAttribute);
                     this._display = value;
                     this.OnDisplayChanged(e);
-                    this.OnPropertyChanged("Display", e);
+                    this.OnPropertyChanged("Display", e, _displayAttribute);
                 }
             }
         }
@@ -2121,7 +2117,7 @@ namespace Make2AntNamespace.Make
         /// The ID property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string ID
+        public string ID
         {
             get
             {
@@ -2134,10 +2130,10 @@ namespace Make2AntNamespace.Make
                     string old = this._iD;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIDChanging(e);
-                    this.OnPropertyChanging("ID", e);
+                    this.OnPropertyChanging("ID", e, _iDAttribute);
                     this._iD = value;
                     this.OnIDChanged(e);
-                    this.OnPropertyChanged("ID", e);
+                    this.OnPropertyChanged("ID", e, _iDAttribute);
                 }
             }
         }
@@ -2149,7 +2145,7 @@ namespace Make2AntNamespace.Make
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("shellLines")]
-        public virtual IRule RuleShellLine
+        public IRule RuleShellLine
         {
             get
             {
@@ -2181,7 +2177,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine")));
                 }
                 return _classInstance;
             }
@@ -2227,6 +2223,11 @@ namespace Make2AntNamespace.Make
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> RuleShellLineChanged;
         
+        private static ITypedElement RetrieveCommandAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.ShellLine.ClassInstance)).Resolve("command")));
+        }
+        
         /// <summary>
         /// Raises the CommandChanging event
         /// </summary>
@@ -2251,6 +2252,11 @@ namespace Make2AntNamespace.Make
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveDisplayAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.ShellLine.ClassInstance)).Resolve("display")));
         }
         
         /// <summary>
@@ -2279,6 +2285,11 @@ namespace Make2AntNamespace.Make
             }
         }
         
+        private static ITypedElement RetrieveIDAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.ShellLine.ClassInstance)).Resolve("ID")));
+        }
+        
         /// <summary>
         /// Raises the IDChanging event
         /// </summary>
@@ -2305,6 +2316,11 @@ namespace Make2AntNamespace.Make
             }
         }
         
+        private static ITypedElement RetrieveRuleShellLineReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.ShellLine.ClassInstance)).Resolve("ruleShellLine")));
+        }
+        
         /// <summary>
         /// Raises the RuleShellLineChanging event
         /// </summary>
@@ -2329,7 +2345,7 @@ namespace Make2AntNamespace.Make
             IRule newRuleShellLine = ModelHelper.CastAs<IRule>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldRuleShellLine, newRuleShellLine);
             this.OnRuleShellLineChanging(e);
-            this.OnPropertyChanging("RuleShellLine");
+            this.OnPropertyChanging("RuleShellLine", e, _ruleShellLineReference);
         }
         
         /// <summary>
@@ -2364,7 +2380,7 @@ namespace Make2AntNamespace.Make
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldRuleShellLine, newRuleShellLine);
             this.OnRuleShellLineChanged(e);
-            this.OnPropertyChanged("RuleShellLine", e);
+            this.OnPropertyChanged("RuleShellLine", e, _ruleShellLineReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -2456,7 +2472,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//ShellLine")));
             }
             return _classInstance;
         }
@@ -2592,7 +2608,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CommandProxy(IShellLine modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "command")
             {
             }
             
@@ -2610,24 +2626,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Command = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CommandChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CommandChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2641,7 +2639,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DisplayProxy(IShellLine modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "display")
             {
             }
             
@@ -2659,24 +2657,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Display = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DisplayChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DisplayChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2690,7 +2670,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IDProxy(IShellLine modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ID")
             {
             }
             
@@ -2708,24 +2688,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.ID = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2739,7 +2701,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RuleShellLineProxy(IShellLine modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ruleShellLine")
             {
             }
             
@@ -2757,24 +2719,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.RuleShellLine = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RuleShellLineChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RuleShellLineChanged -= handler;
-            }
         }
     }
     
@@ -2783,8 +2727,8 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Comment/")]
-    public class Comment : ModelElement, IComment, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Comment")]
+    public partial class Comment : ModelElement, IComment, IModelElement
     {
         
         /// <summary>
@@ -2792,10 +2736,14 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private string _text;
         
+        private static Lazy<ITypedElement> _textAttribute = new Lazy<ITypedElement>(RetrieveTextAttribute);
+        
         /// <summary>
         /// The backing field for the ID property
         /// </summary>
         private string _iD;
+        
+        private static Lazy<ITypedElement> _iDAttribute = new Lazy<ITypedElement>(RetrieveIDAttribute);
         
         private static IClass _classInstance;
         
@@ -2804,7 +2752,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("text")]
         [XmlAttributeAttribute(true)]
-        public virtual string Text
+        public string Text
         {
             get
             {
@@ -2817,10 +2765,10 @@ namespace Make2AntNamespace.Make
                     string old = this._text;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnTextChanging(e);
-                    this.OnPropertyChanging("Text", e);
+                    this.OnPropertyChanging("Text", e, _textAttribute);
                     this._text = value;
                     this.OnTextChanged(e);
-                    this.OnPropertyChanged("Text", e);
+                    this.OnPropertyChanged("Text", e, _textAttribute);
                 }
             }
         }
@@ -2829,7 +2777,7 @@ namespace Make2AntNamespace.Make
         /// The ID property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string ID
+        public string ID
         {
             get
             {
@@ -2842,10 +2790,10 @@ namespace Make2AntNamespace.Make
                     string old = this._iD;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIDChanging(e);
-                    this.OnPropertyChanging("ID", e);
+                    this.OnPropertyChanging("ID", e, _iDAttribute);
                     this._iD = value;
                     this.OnIDChanged(e);
-                    this.OnPropertyChanged("ID", e);
+                    this.OnPropertyChanged("ID", e, _iDAttribute);
                 }
             }
         }
@@ -2859,7 +2807,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Comment/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Comment")));
                 }
                 return _classInstance;
             }
@@ -2885,6 +2833,11 @@ namespace Make2AntNamespace.Make
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IDChanged;
         
+        private static ITypedElement RetrieveTextAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Comment.ClassInstance)).Resolve("text")));
+        }
+        
         /// <summary>
         /// Raises the TextChanging event
         /// </summary>
@@ -2909,6 +2862,11 @@ namespace Make2AntNamespace.Make
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveIDAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Comment.ClassInstance)).Resolve("ID")));
         }
         
         /// <summary>
@@ -2983,7 +2941,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Comment/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Comment")));
             }
             return _classInstance;
         }
@@ -2999,7 +2957,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TextProxy(IComment modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "text")
             {
             }
             
@@ -3017,24 +2975,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Text = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.TextChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.TextChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -3048,7 +2988,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IDProxy(IComment modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ID")
             {
             }
             
@@ -3066,24 +3006,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.ID = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged -= handler;
-            }
         }
     }
     
@@ -3092,8 +3014,8 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency/")]
-    public abstract class Dependency : ModelElement, IDependency, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency")]
+    public abstract partial class Dependency : ModelElement, IDependency, IModelElement
     {
         
         /// <summary>
@@ -3101,13 +3023,15 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private string _iD;
         
+        private static Lazy<ITypedElement> _iDAttribute = new Lazy<ITypedElement>(RetrieveIDAttribute);
+        
         private static IClass _classInstance;
         
         /// <summary>
         /// The ID property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string ID
+        public string ID
         {
             get
             {
@@ -3120,10 +3044,10 @@ namespace Make2AntNamespace.Make
                     string old = this._iD;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIDChanging(e);
-                    this.OnPropertyChanging("ID", e);
+                    this.OnPropertyChanging("ID", e, _iDAttribute);
                     this._iD = value;
                     this.OnIDChanged(e);
-                    this.OnPropertyChanged("ID", e);
+                    this.OnPropertyChanged("ID", e, _iDAttribute);
                 }
             }
         }
@@ -3137,7 +3061,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency")));
                 }
                 return _classInstance;
             }
@@ -3152,6 +3076,11 @@ namespace Make2AntNamespace.Make
         /// Gets fired when the ID property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IDChanged;
+        
+        private static ITypedElement RetrieveIDAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.Dependency.ClassInstance)).Resolve("ID")));
+        }
         
         /// <summary>
         /// Raises the IDChanging event
@@ -3216,7 +3145,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//Dependency")));
             }
             return _classInstance;
         }
@@ -3232,7 +3161,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IDProxy(IDependency modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ID")
             {
             }
             
@@ -3250,24 +3179,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.ID = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IDChanged -= handler;
-            }
         }
     }
     
@@ -3276,9 +3187,11 @@ namespace Make2AntNamespace.Make
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep/")]
-    public class RuleDep : Dependency, IRuleDep, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep")]
+    public partial class RuleDep : Dependency, IRuleDep, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _ruledepReference = new Lazy<ITypedElement>(RetrieveRuledepReference);
         
         /// <summary>
         /// The backing field for the Ruledep property
@@ -3292,7 +3205,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("ruledep")]
         [XmlAttributeAttribute(true)]
-        public virtual IRule Ruledep
+        public IRule Ruledep
         {
             get
             {
@@ -3305,7 +3218,7 @@ namespace Make2AntNamespace.Make
                     IRule old = this._ruledep;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRuledepChanging(e);
-                    this.OnPropertyChanging("Ruledep", e);
+                    this.OnPropertyChanging("Ruledep", e, _ruledepReference);
                     this._ruledep = value;
                     if ((old != null))
                     {
@@ -3316,7 +3229,7 @@ namespace Make2AntNamespace.Make
                         value.Deleted += this.OnResetRuledep;
                     }
                     this.OnRuledepChanged(e);
-                    this.OnPropertyChanged("Ruledep", e);
+                    this.OnPropertyChanged("Ruledep", e, _ruledepReference);
                 }
             }
         }
@@ -3341,7 +3254,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep")));
                 }
                 return _classInstance;
             }
@@ -3356,6 +3269,11 @@ namespace Make2AntNamespace.Make
         /// Gets fired when the Ruledep property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> RuledepChanged;
+        
+        private static ITypedElement RetrieveRuledepReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.RuleDep.ClassInstance)).Resolve("ruledep")));
+        }
         
         /// <summary>
         /// Raises the RuledepChanging event
@@ -3443,7 +3361,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//RuleDep")));
             }
             return _classInstance;
         }
@@ -3579,7 +3497,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RuledepProxy(IRuleDep modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ruledep")
             {
             }
             
@@ -3597,24 +3515,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Ruledep = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RuledepChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RuledepChanged -= handler;
-            }
         }
     }
     
@@ -3624,9 +3524,9 @@ namespace Make2AntNamespace.Make
     [XmlIdentifierAttribute("name")]
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Make")]
     [XmlNamespacePrefixAttribute("Make")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep/")]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep")]
     [DebuggerDisplayAttribute("FileDep {Name}")]
-    public class FileDep : Dependency, IFileDep, IModelElement
+    public partial class FileDep : Dependency, IFileDep, IModelElement
     {
         
         /// <summary>
@@ -3634,10 +3534,14 @@ namespace Make2AntNamespace.Make
         /// </summary>
         private DateTime _date;
         
+        private static Lazy<ITypedElement> _dateAttribute = new Lazy<ITypedElement>(RetrieveDateAttribute);
+        
         /// <summary>
         /// The backing field for the Name property
         /// </summary>
         private string _name;
+        
+        private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
         
         private static IClass _classInstance;
         
@@ -3646,7 +3550,7 @@ namespace Make2AntNamespace.Make
         /// </summary>
         [XmlElementNameAttribute("date")]
         [XmlAttributeAttribute(true)]
-        public virtual DateTime Date
+        public DateTime Date
         {
             get
             {
@@ -3659,10 +3563,10 @@ namespace Make2AntNamespace.Make
                     DateTime old = this._date;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDateChanging(e);
-                    this.OnPropertyChanging("Date", e);
+                    this.OnPropertyChanging("Date", e, _dateAttribute);
                     this._date = value;
                     this.OnDateChanged(e);
-                    this.OnPropertyChanged("Date", e);
+                    this.OnPropertyChanged("Date", e, _dateAttribute);
                 }
             }
         }
@@ -3673,7 +3577,7 @@ namespace Make2AntNamespace.Make
         [XmlElementNameAttribute("name")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
-        public virtual string Name
+        public string Name
         {
             get
             {
@@ -3686,10 +3590,10 @@ namespace Make2AntNamespace.Make
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnNameChanging(e);
-                    this.OnPropertyChanging("Name", e);
+                    this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
                     this.OnNameChanged(e);
-                    this.OnPropertyChanged("Name", e);
+                    this.OnPropertyChanged("Name", e, _nameAttribute);
                 }
             }
         }
@@ -3703,7 +3607,7 @@ namespace Make2AntNamespace.Make
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep")));
                 }
                 return _classInstance;
             }
@@ -3740,6 +3644,11 @@ namespace Make2AntNamespace.Make
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> NameChanged;
         
+        private static ITypedElement RetrieveDateAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.FileDep.ClassInstance)).Resolve("date")));
+        }
+        
         /// <summary>
         /// Raises the DateChanging event
         /// </summary>
@@ -3764,6 +3673,11 @@ namespace Make2AntNamespace.Make
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Make2AntNamespace.Make.FileDep.ClassInstance)).Resolve("name")));
         }
         
         /// <summary>
@@ -3838,7 +3752,7 @@ namespace Make2AntNamespace.Make
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Make#//FileDep")));
             }
             return _classInstance;
         }
@@ -3867,7 +3781,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DateProxy(IFileDep modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "date")
             {
             }
             
@@ -3885,24 +3799,6 @@ namespace Make2AntNamespace.Make
                     this.ModelElement.Date = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DateChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DateChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -3916,7 +3812,7 @@ namespace Make2AntNamespace.Make
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IFileDep modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "name")
             {
             }
             
@@ -3933,24 +3829,6 @@ namespace Make2AntNamespace.Make
                 {
                     this.ModelElement.Name = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged -= handler;
             }
         }
     }

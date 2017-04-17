@@ -52,40 +52,41 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NMF.Collections, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Collections, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Collections.dll</HintPath>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Expressions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Expressions, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Expressions.dll</HintPath>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Expressions.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Expressions.Linq">
-      <HintPath>lib\NMF.Expressions.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="NMF.Models, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Expressions.Linq, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Models.dll</HintPath>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Expressions.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Models, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Serialization.dll</HintPath>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Models.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Synchronizations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Serialization, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Synchronizations.dll</HintPath>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Transformations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Synchronizations, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Transformations.dll</HintPath>
+      <HintPath>..\..\NMF\Synchronizations\Synchronizations\bin\Debug\NMF.Synchronizations.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Transformations.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Transformations, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Transformations.Core.dll</HintPath>
+      <HintPath>..\..\NMF\Synchronizations\Synchronizations\bin\Debug\NMF.Transformations.dll</HintPath>
     </Reference>
-    <Reference Include="NMF.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NMF.Transformations.Core, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\NMF.Utilities.dll</HintPath>
+      <HintPath>..\..\NMF\Synchronizations\Synchronizations\bin\Debug\NMF.Transformations.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Utilities, Version=1.0.74.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\NMF\Models\Models\bin\Debug\NMF.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -138,7 +139,9 @@
     <Compile Include="Synchronizations\Make2Ant\OutputModelCollection.cs" />
     <Compile Include="Synchronizations\Make2Ant\OutputModelContainer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

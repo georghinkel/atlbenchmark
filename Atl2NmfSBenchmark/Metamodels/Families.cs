@@ -27,6 +27,7 @@ namespace Families2PersonsNamespace.Families
     using NMF.Serialization;
     using NMF.Utilities;
     using NMF.Models.Meta;
+    using System.Collections.Specialized;
     using NMF.Models.Repository;
     
     
@@ -35,8 +36,8 @@ namespace Families2PersonsNamespace.Families
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Families")]
     [XmlNamespacePrefixAttribute("Families")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//Family/")]
-    public class Family : FamElem, IFamily, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//Family")]
+    public partial class Family : FamElem, IFamily, IModelElement
     {
         
         /// <summary>
@@ -44,20 +45,30 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         private string _lastName;
         
+        private static Lazy<ITypedElement> _lastNameAttribute = new Lazy<ITypedElement>(RetrieveLastNameAttribute);
+        
+        private static Lazy<ITypedElement> _fatherReference = new Lazy<ITypedElement>(RetrieveFatherReference);
+        
         /// <summary>
         /// The backing field for the Father property
         /// </summary>
         private IMember _father;
+        
+        private static Lazy<ITypedElement> _motherReference = new Lazy<ITypedElement>(RetrieveMotherReference);
         
         /// <summary>
         /// The backing field for the Mother property
         /// </summary>
         private IMember _mother;
         
+        private static Lazy<ITypedElement> _sonsReference = new Lazy<ITypedElement>(RetrieveSonsReference);
+        
         /// <summary>
         /// The backing field for the Sons property
         /// </summary>
         private FamilySonsCollection _sons;
+        
+        private static Lazy<ITypedElement> _daughtersReference = new Lazy<ITypedElement>(RetrieveDaughtersReference);
         
         /// <summary>
         /// The backing field for the Daughters property
@@ -81,7 +92,7 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         [XmlElementNameAttribute("lastName")]
         [XmlAttributeAttribute(true)]
-        public virtual string LastName
+        public string LastName
         {
             get
             {
@@ -94,10 +105,10 @@ namespace Families2PersonsNamespace.Families
                     string old = this._lastName;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnLastNameChanging(e);
-                    this.OnPropertyChanging("LastName", e);
+                    this.OnPropertyChanging("LastName", e, _lastNameAttribute);
                     this._lastName = value;
                     this.OnLastNameChanged(e);
-                    this.OnPropertyChanged("LastName", e);
+                    this.OnPropertyChanged("LastName", e, _lastNameAttribute);
                 }
             }
         }
@@ -109,7 +120,7 @@ namespace Families2PersonsNamespace.Families
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("familyFather")]
-        public virtual IMember Father
+        public IMember Father
         {
             get
             {
@@ -122,7 +133,7 @@ namespace Families2PersonsNamespace.Families
                     IMember old = this._father;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFatherChanging(e);
-                    this.OnPropertyChanging("Father", e);
+                    this.OnPropertyChanging("Father", e, _fatherReference);
                     this._father = value;
                     if ((old != null))
                     {
@@ -137,7 +148,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetFather;
                     }
                     this.OnFatherChanged(e);
-                    this.OnPropertyChanged("Father", e);
+                    this.OnPropertyChanged("Father", e, _fatherReference);
                 }
             }
         }
@@ -149,7 +160,7 @@ namespace Families2PersonsNamespace.Families
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("familyMother")]
-        public virtual IMember Mother
+        public IMember Mother
         {
             get
             {
@@ -162,7 +173,7 @@ namespace Families2PersonsNamespace.Families
                     IMember old = this._mother;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnMotherChanging(e);
-                    this.OnPropertyChanging("Mother", e);
+                    this.OnPropertyChanging("Mother", e, _motherReference);
                     this._mother = value;
                     if ((old != null))
                     {
@@ -177,7 +188,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetMother;
                     }
                     this.OnMotherChanged(e);
-                    this.OnPropertyChanged("Mother", e);
+                    this.OnPropertyChanged("Mother", e, _motherReference);
                 }
             }
         }
@@ -191,7 +202,7 @@ namespace Families2PersonsNamespace.Families
         [ContainmentAttribute()]
         [XmlOppositeAttribute("familySon")]
         [ConstantAttribute()]
-        public virtual ISetExpression<IMember> Sons
+        public IOrderedSetExpression<IMember> Sons
         {
             get
             {
@@ -208,7 +219,7 @@ namespace Families2PersonsNamespace.Families
         [ContainmentAttribute()]
         [XmlOppositeAttribute("familyDaughter")]
         [ConstantAttribute()]
-        public virtual ISetExpression<IMember> Daughters
+        public IOrderedSetExpression<IMember> Daughters
         {
             get
             {
@@ -247,7 +258,7 @@ namespace Families2PersonsNamespace.Families
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Family/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Family")));
                 }
                 return _classInstance;
             }
@@ -283,6 +294,11 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> MotherChanged;
         
+        private static ITypedElement RetrieveLastNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Family.ClassInstance)).Resolve("lastName")));
+        }
+        
         /// <summary>
         /// Raises the LastNameChanging event
         /// </summary>
@@ -307,6 +323,11 @@ namespace Families2PersonsNamespace.Families
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveFatherReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Family.ClassInstance)).Resolve("father")));
         }
         
         /// <summary>
@@ -345,6 +366,11 @@ namespace Families2PersonsNamespace.Families
             this.Father = null;
         }
         
+        private static ITypedElement RetrieveMotherReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Family.ClassInstance)).Resolve("mother")));
+        }
+        
         /// <summary>
         /// Raises the MotherChanging event
         /// </summary>
@@ -381,14 +407,19 @@ namespace Families2PersonsNamespace.Families
             this.Mother = null;
         }
         
+        private static ITypedElement RetrieveSonsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Family.ClassInstance)).Resolve("sons")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Sons property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SonsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void SonsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Sons", e);
+            this.OnCollectionChanging("Sons", e, _sonsReference);
         }
         
         /// <summary>
@@ -396,9 +427,14 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SonsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void SonsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Sons", e);
+            this.OnCollectionChanged("Sons", e, _sonsReference);
+        }
+        
+        private static ITypedElement RetrieveDaughtersReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Family.ClassInstance)).Resolve("daughters")));
         }
         
         /// <summary>
@@ -406,9 +442,9 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DaughtersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void DaughtersCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Daughters", e);
+            this.OnCollectionChanging("Daughters", e, _daughtersReference);
         }
         
         /// <summary>
@@ -416,9 +452,9 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DaughtersCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DaughtersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Daughters", e);
+            this.OnCollectionChanged("Daughters", e, _daughtersReference);
         }
         
         /// <summary>
@@ -435,6 +471,16 @@ namespace Families2PersonsNamespace.Families
             if ((element == this.Mother))
             {
                 return ModelHelper.CreatePath("Mother");
+            }
+            int sonsIndex = ModelHelper.IndexOfReference(this.Sons, element);
+            if ((sonsIndex != -1))
+            {
+                return ModelHelper.CreatePath("sons", sonsIndex);
+            }
+            int daughtersIndex = ModelHelper.IndexOfReference(this.Daughters, element);
+            if ((daughtersIndex != -1))
+            {
+                return ModelHelper.CreatePath("daughters", daughtersIndex);
             }
             return base.GetRelativePathForNonIdentifiedChild(element);
         }
@@ -454,6 +500,28 @@ namespace Families2PersonsNamespace.Families
             if ((reference == "MOTHER"))
             {
                 return this.Mother;
+            }
+            if ((reference == "SONS"))
+            {
+                if ((index < this.Sons.Count))
+                {
+                    return this.Sons[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            if ((reference == "DAUGHTERS"))
+            {
+                if ((index < this.Daughters.Count))
+                {
+                    return this.Daughters[index];
+                }
+                else
+                {
+                    return null;
+                }
             }
             return base.GetModelElementForReference(reference, index);
         }
@@ -553,13 +621,31 @@ namespace Families2PersonsNamespace.Families
         }
         
         /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._sons))
+            {
+                return "sons";
+            }
+            if ((container == this._daughters))
+            {
+                return "daughters";
+            }
+            return base.GetCompositionName(container);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Family/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Family")));
             }
             return _classInstance;
         }
@@ -1009,7 +1095,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LastNameProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "lastName")
             {
             }
             
@@ -1027,24 +1113,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.LastName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LastNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LastNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1058,7 +1126,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FatherProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "father")
             {
             }
             
@@ -1076,24 +1144,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.Father = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FatherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FatherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1107,7 +1157,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public MotherProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "mother")
             {
             }
             
@@ -1125,24 +1175,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.Mother = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MotherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MotherChanged -= handler;
-            }
         }
     }
     
@@ -1151,8 +1183,8 @@ namespace Families2PersonsNamespace.Families
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Families")]
     [XmlNamespacePrefixAttribute("Families")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//Member/")]
-    public class Member : FamElem, IMember, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//Member")]
+    public partial class Member : FamElem, IMember, IModelElement
     {
         
         /// <summary>
@@ -1160,20 +1192,30 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         private string _firstName;
         
+        private static Lazy<ITypedElement> _firstNameAttribute = new Lazy<ITypedElement>(RetrieveFirstNameAttribute);
+        
+        private static Lazy<ITypedElement> _familyFatherReference = new Lazy<ITypedElement>(RetrieveFamilyFatherReference);
+        
         /// <summary>
         /// The backing field for the FamilyFather property
         /// </summary>
         private IFamily _familyFather;
+        
+        private static Lazy<ITypedElement> _familyMotherReference = new Lazy<ITypedElement>(RetrieveFamilyMotherReference);
         
         /// <summary>
         /// The backing field for the FamilyMother property
         /// </summary>
         private IFamily _familyMother;
         
+        private static Lazy<ITypedElement> _familySonReference = new Lazy<ITypedElement>(RetrieveFamilySonReference);
+        
         /// <summary>
         /// The backing field for the FamilySon property
         /// </summary>
         private IFamily _familySon;
+        
+        private static Lazy<ITypedElement> _familyDaughterReference = new Lazy<ITypedElement>(RetrieveFamilyDaughterReference);
         
         /// <summary>
         /// The backing field for the FamilyDaughter property
@@ -1187,7 +1229,7 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         [XmlElementNameAttribute("firstName")]
         [XmlAttributeAttribute(true)]
-        public virtual string FirstName
+        public string FirstName
         {
             get
             {
@@ -1200,10 +1242,10 @@ namespace Families2PersonsNamespace.Families
                     string old = this._firstName;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFirstNameChanging(e);
-                    this.OnPropertyChanging("FirstName", e);
+                    this.OnPropertyChanging("FirstName", e, _firstNameAttribute);
                     this._firstName = value;
                     this.OnFirstNameChanged(e);
-                    this.OnPropertyChanged("FirstName", e);
+                    this.OnPropertyChanged("FirstName", e, _firstNameAttribute);
                 }
             }
         }
@@ -1215,7 +1257,7 @@ namespace Families2PersonsNamespace.Families
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("father")]
-        public virtual IFamily FamilyFather
+        public IFamily FamilyFather
         {
             get
             {
@@ -1228,7 +1270,7 @@ namespace Families2PersonsNamespace.Families
                     IFamily old = this._familyFather;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFamilyFatherChanging(e);
-                    this.OnPropertyChanging("FamilyFather", e);
+                    this.OnPropertyChanging("FamilyFather", e, _familyFatherReference);
                     this._familyFather = value;
                     this.Parent = value;
                     if ((old != null))
@@ -1242,7 +1284,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetFamilyFather;
                     }
                     this.OnFamilyFatherChanged(e);
-                    this.OnPropertyChanged("FamilyFather", e);
+                    this.OnPropertyChanged("FamilyFather", e, _familyFatherReference);
                 }
             }
         }
@@ -1254,7 +1296,7 @@ namespace Families2PersonsNamespace.Families
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("mother")]
-        public virtual IFamily FamilyMother
+        public IFamily FamilyMother
         {
             get
             {
@@ -1267,7 +1309,7 @@ namespace Families2PersonsNamespace.Families
                     IFamily old = this._familyMother;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFamilyMotherChanging(e);
-                    this.OnPropertyChanging("FamilyMother", e);
+                    this.OnPropertyChanging("FamilyMother", e, _familyMotherReference);
                     this._familyMother = value;
                     this.Parent = value;
                     if ((old != null))
@@ -1281,7 +1323,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetFamilyMother;
                     }
                     this.OnFamilyMotherChanged(e);
-                    this.OnPropertyChanged("FamilyMother", e);
+                    this.OnPropertyChanged("FamilyMother", e, _familyMotherReference);
                 }
             }
         }
@@ -1293,7 +1335,7 @@ namespace Families2PersonsNamespace.Families
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("sons")]
-        public virtual IFamily FamilySon
+        public IFamily FamilySon
         {
             get
             {
@@ -1306,7 +1348,7 @@ namespace Families2PersonsNamespace.Families
                     IFamily old = this._familySon;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFamilySonChanging(e);
-                    this.OnPropertyChanging("FamilySon", e);
+                    this.OnPropertyChanging("FamilySon", e, _familySonReference);
                     this._familySon = value;
                     this.Parent = value;
                     if ((old != null))
@@ -1320,7 +1362,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetFamilySon;
                     }
                     this.OnFamilySonChanged(e);
-                    this.OnPropertyChanged("FamilySon", e);
+                    this.OnPropertyChanged("FamilySon", e, _familySonReference);
                 }
             }
         }
@@ -1332,7 +1374,7 @@ namespace Families2PersonsNamespace.Families
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("daughters")]
-        public virtual IFamily FamilyDaughter
+        public IFamily FamilyDaughter
         {
             get
             {
@@ -1345,7 +1387,7 @@ namespace Families2PersonsNamespace.Families
                     IFamily old = this._familyDaughter;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFamilyDaughterChanging(e);
-                    this.OnPropertyChanging("FamilyDaughter", e);
+                    this.OnPropertyChanging("FamilyDaughter", e, _familyDaughterReference);
                     this._familyDaughter = value;
                     this.Parent = value;
                     if ((old != null))
@@ -1359,7 +1401,7 @@ namespace Families2PersonsNamespace.Families
                         value.Deleted += this.OnResetFamilyDaughter;
                     }
                     this.OnFamilyDaughterChanged(e);
-                    this.OnPropertyChanged("FamilyDaughter", e);
+                    this.OnPropertyChanged("FamilyDaughter", e, _familyDaughterReference);
                 }
             }
         }
@@ -1384,7 +1426,7 @@ namespace Families2PersonsNamespace.Families
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Member/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Member")));
                 }
                 return _classInstance;
             }
@@ -1440,6 +1482,11 @@ namespace Families2PersonsNamespace.Families
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
         
+        private static ITypedElement RetrieveFirstNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Member.ClassInstance)).Resolve("firstName")));
+        }
+        
         /// <summary>
         /// Raises the FirstNameChanging event
         /// </summary>
@@ -1464,6 +1511,11 @@ namespace Families2PersonsNamespace.Families
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveFamilyFatherReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Member.ClassInstance)).Resolve("familyFather")));
         }
         
         /// <summary>
@@ -1502,6 +1554,11 @@ namespace Families2PersonsNamespace.Families
             this.FamilyFather = null;
         }
         
+        private static ITypedElement RetrieveFamilyMotherReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Member.ClassInstance)).Resolve("familyMother")));
+        }
+        
         /// <summary>
         /// Raises the FamilyMotherChanging event
         /// </summary>
@@ -1538,6 +1595,11 @@ namespace Families2PersonsNamespace.Families
             this.FamilyMother = null;
         }
         
+        private static ITypedElement RetrieveFamilySonReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Member.ClassInstance)).Resolve("familySon")));
+        }
+        
         /// <summary>
         /// Raises the FamilySonChanging event
         /// </summary>
@@ -1572,6 +1634,11 @@ namespace Families2PersonsNamespace.Families
         private void OnResetFamilySon(object sender, System.EventArgs eventArgs)
         {
             this.FamilySon = null;
+        }
+        
+        private static ITypedElement RetrieveFamilyDaughterReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Families.Member.ClassInstance)).Resolve("familyDaughter")));
         }
         
         /// <summary>
@@ -1719,7 +1786,7 @@ namespace Families2PersonsNamespace.Families
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Member/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//Member")));
             }
             return _classInstance;
         }
@@ -1945,7 +2012,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FirstNameProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "firstName")
             {
             }
             
@@ -1963,24 +2030,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.FirstName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FirstNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FirstNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1994,7 +2043,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyFatherProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyFather")
             {
             }
             
@@ -2012,24 +2061,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.FamilyFather = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyFatherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyFatherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2043,7 +2074,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyMotherProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyMother")
             {
             }
             
@@ -2061,24 +2092,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.FamilyMother = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyMotherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyMotherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2092,7 +2105,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilySonProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familySon")
             {
             }
             
@@ -2110,24 +2123,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.FamilySon = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilySonChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilySonChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2141,7 +2136,7 @@ namespace Families2PersonsNamespace.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyDaughterProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyDaughter")
             {
             }
             
@@ -2159,24 +2154,6 @@ namespace Families2PersonsNamespace.Families
                     this.ModelElement.FamilyDaughter = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyDaughterChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyDaughterChanged -= handler;
-            }
         }
     }
     
@@ -2185,8 +2162,8 @@ namespace Families2PersonsNamespace.Families
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Families")]
     [XmlNamespacePrefixAttribute("Families")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem/")]
-    public abstract class FamElem : ModelElement, IFamElem, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem")]
+    public abstract partial class FamElem : ModelElement, IFamElem, IModelElement
     {
         
         private static IClass _classInstance;
@@ -2200,7 +2177,7 @@ namespace Families2PersonsNamespace.Families
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem")));
                 }
                 return _classInstance;
             }
@@ -2213,7 +2190,7 @@ namespace Families2PersonsNamespace.Families
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Families#//FamElem")));
             }
             return _classInstance;
         }
@@ -2332,7 +2309,7 @@ namespace Families2PersonsNamespace.Families
         event System.EventHandler<ValueChangedEventArgs> FamilyDaughterChanged;
     }
     
-    public class FamilySonsCollection : ObservableOppositeSet<IFamily, IMember>
+    public class FamilySonsCollection : ObservableOppositeOrderedSet<IFamily, IMember>
     {
         
         public FamilySonsCollection(IFamily parent) : 
@@ -2366,7 +2343,7 @@ namespace Families2PersonsNamespace.Families
         }
     }
     
-    public class FamilyDaughtersCollection : ObservableOppositeSet<IFamily, IMember>
+    public class FamilyDaughtersCollection : ObservableOppositeOrderedSet<IFamily, IMember>
     {
         
         public FamilyDaughtersCollection(IFamily parent) : 
@@ -2438,7 +2415,7 @@ namespace Families2PersonsNamespace.Families
         /// <summary>
         /// The sons property
         /// </summary>
-        ISetExpression<IMember> Sons
+        IOrderedSetExpression<IMember> Sons
         {
             get;
         }
@@ -2446,7 +2423,7 @@ namespace Families2PersonsNamespace.Families
         /// <summary>
         /// The daughters property
         /// </summary>
-        ISetExpression<IMember> Daughters
+        IOrderedSetExpression<IMember> Daughters
         {
             get;
         }

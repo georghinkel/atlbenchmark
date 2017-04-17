@@ -35,14 +35,16 @@ namespace Families2PersonsNamespace.Persons
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Persons")]
     [XmlNamespacePrefixAttribute("Persons")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Person/")]
-    public abstract class Person : ModelElement, IPerson, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Person")]
+    public abstract partial class Person : ModelElement, IPerson, IModelElement
     {
         
         /// <summary>
         /// The backing field for the FullName property
         /// </summary>
         private string _fullName;
+        
+        private static Lazy<ITypedElement> _fullNameAttribute = new Lazy<ITypedElement>(RetrieveFullNameAttribute);
         
         private static IClass _classInstance;
         
@@ -51,7 +53,7 @@ namespace Families2PersonsNamespace.Persons
         /// </summary>
         [XmlElementNameAttribute("fullName")]
         [XmlAttributeAttribute(true)]
-        public virtual string FullName
+        public string FullName
         {
             get
             {
@@ -64,10 +66,10 @@ namespace Families2PersonsNamespace.Persons
                     string old = this._fullName;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFullNameChanging(e);
-                    this.OnPropertyChanging("FullName", e);
+                    this.OnPropertyChanging("FullName", e, _fullNameAttribute);
                     this._fullName = value;
                     this.OnFullNameChanged(e);
-                    this.OnPropertyChanged("FullName", e);
+                    this.OnPropertyChanged("FullName", e, _fullNameAttribute);
                 }
             }
         }
@@ -81,7 +83,7 @@ namespace Families2PersonsNamespace.Persons
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Person/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Person")));
                 }
                 return _classInstance;
             }
@@ -96,6 +98,11 @@ namespace Families2PersonsNamespace.Persons
         /// Gets fired when the FullName property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> FullNameChanged;
+        
+        private static ITypedElement RetrieveFullNameAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Families2PersonsNamespace.Persons.Person.ClassInstance)).Resolve("fullName")));
+        }
         
         /// <summary>
         /// Raises the FullNameChanging event
@@ -160,7 +167,7 @@ namespace Families2PersonsNamespace.Persons
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Person/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Person")));
             }
             return _classInstance;
         }
@@ -176,7 +183,7 @@ namespace Families2PersonsNamespace.Persons
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FullNameProxy(IPerson modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "fullName")
             {
             }
             
@@ -194,24 +201,6 @@ namespace Families2PersonsNamespace.Persons
                     this.ModelElement.FullName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FullNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FullNameChanged -= handler;
-            }
         }
     }
     
@@ -220,8 +209,8 @@ namespace Families2PersonsNamespace.Persons
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Persons")]
     [XmlNamespacePrefixAttribute("Persons")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Male/")]
-    public class Male : Person, IMale, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Male")]
+    public partial class Male : Person, IMale, IModelElement
     {
         
         private static IClass _classInstance;
@@ -235,7 +224,7 @@ namespace Families2PersonsNamespace.Persons
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Male/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Male")));
                 }
                 return _classInstance;
             }
@@ -248,7 +237,7 @@ namespace Families2PersonsNamespace.Persons
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Male/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Male")));
             }
             return _classInstance;
         }
@@ -259,8 +248,8 @@ namespace Families2PersonsNamespace.Persons
     /// </summary>
     [XmlNamespaceAttribute("http://www.eclipse.org/atl/atlTransformations/Persons")]
     [XmlNamespacePrefixAttribute("Persons")]
-    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Female/")]
-    public class Female : Person, IFemale, IModelElement
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Female")]
+    public partial class Female : Person, IFemale, IModelElement
     {
         
         private static IClass _classInstance;
@@ -274,7 +263,7 @@ namespace Families2PersonsNamespace.Persons
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Female/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Female")));
                 }
                 return _classInstance;
             }
@@ -287,7 +276,7 @@ namespace Families2PersonsNamespace.Persons
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Female/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/atl/atlTransformations/Persons#//Female")));
             }
             return _classInstance;
         }
