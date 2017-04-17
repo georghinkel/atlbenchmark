@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ED79FA48-B06C-4DCF-B49A-A3414E69D5B7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Synchronizations.ATLBenchmark</RootNamespace>
+    <AssemblyName>ATLBenchmark</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NMF.Collections, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Expressions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Expressions.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Expressions.Linq">
+      <HintPath>lib\NMF.Expressions.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Models, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Synchronizations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Synchronizations.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Transformations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Transformations.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Transformations.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Transformations.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NMF.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\NMF.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Make2AntExecutor.cs" />
+    <Compile Include="Make2AntSyncAtlExecutor.cs" />
+    <Compile Include="Metamodels\Ant.cs" />
+    <Compile Include="Metamodels\Families.cs" />
+    <Compile Include="Metamodels\Make.cs" />
+    <Compile Include="Metamodels\Persons.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScenarioGeneration\Families\AddNewDaughter.cs" />
+    <Compile Include="ScenarioGeneration\Families\AddNewFamily.cs" />
+    <Compile Include="ScenarioGeneration\Families\AddNewSon.cs" />
+    <Compile Include="ScenarioGeneration\Families\FamiliesGenerator.cs" />
+    <Compile Include="ScenarioGeneration\Families\RemoveDaughter.cs" />
+    <Compile Include="ScenarioGeneration\Families\RemoveFamilie.cs" />
+    <Compile Include="ScenarioGeneration\Families\RemoveSon.cs" />
+    <Compile Include="ScenarioGeneration\Families\RenameDaughter.cs" />
+    <Compile Include="ScenarioGeneration\Families\RenameSon.cs" />
+    <Compile Include="Families2PersonsExecuter.cs" />
+    <Compile Include="ScenarioGeneration\Make\AddFileDependency.cs" />
+    <Compile Include="ScenarioGeneration\Make\AddMacro.cs" />
+    <Compile Include="ScenarioGeneration\Make\AddRule.cs" />
+    <Compile Include="ScenarioGeneration\Make\AddShellLine.cs" />
+    <Compile Include="ScenarioGeneration\Make\ChangeComment.cs" />
+    <Compile Include="ScenarioGeneration\Make\ChangeFileDependency.cs" />
+    <Compile Include="ScenarioGeneration\Make\ChangeMacro.cs" />
+    <Compile Include="ScenarioGeneration\Make\ChangeRule.cs" />
+    <Compile Include="ScenarioGeneration\Make\ChangeShellLineCommand.cs" />
+    <Compile Include="ScenarioGeneration\Make\MakeGenerator.cs" />
+    <Compile Include="ScenarioGeneration\Make\RemoveFileDependency.cs" />
+    <Compile Include="ScenarioGeneration\Make\RemoveMacro.cs" />
+    <Compile Include="ScenarioGeneration\Make\RemoveRule.cs" />
+    <Compile Include="ScenarioGeneration\Make\RemoveShellLine.cs" />
+    <Compile Include="ScenarioGeneration\WorkloadAction.cs" />
+    <Compile Include="Synchronizations\Families2Persons\Families2Persons.cs" />
+    <Compile Include="Synchronizations\Families2Persons\FilterExtensionMethods.cs" />
+    <Compile Include="Synchronizations\Families2Persons\HelperExtensionMethods.cs" />
+    <Compile Include="Synchronizations\Families2Persons\InputModelContainer.cs" />
+    <Compile Include="Synchronizations\Families2Persons\OutputModelCollection.cs" />
+    <Compile Include="Synchronizations\Families2Persons\OutputModelContainer.cs" />
+    <Compile Include="Synchronizations\Make2Ant\FilterExtensionMethods.cs" />
+    <Compile Include="Synchronizations\Make2Ant\InputModelContainer.cs" />
+    <Compile Include="Synchronizations\Make2Ant\Make2Ant.cs" />
+    <Compile Include="Synchronizations\Make2Ant\OutputModelCollection.cs" />
+    <Compile Include="Synchronizations\Make2Ant\OutputModelContainer.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
