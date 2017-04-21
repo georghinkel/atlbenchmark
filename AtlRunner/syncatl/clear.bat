@@ -1,0 +1,3 @@
+
+@del *-synchronized.*
+@del *-modified.*

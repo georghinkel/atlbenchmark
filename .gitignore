@@ -11,6 +11,8 @@ makeResultsAtl.csv
 familyInputModels/
 makeInputModels/
 
+.RHistory
+
 # User-specific files
 *.suo
 *.user

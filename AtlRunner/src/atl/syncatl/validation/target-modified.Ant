@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Project xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Ant" name="makefile" description="Test d'un fichier makefile" default="//@targets.0" ID="0a0">
+  <properties xsi:type="PropertyValue" ID="2a1" name="CC" value="gcc"/>
+  <properties xsi:type="PropertyValue" ID="3a1" name="CFLAGS" value="-wall -ansi"/>
+  <properties xsi:type="PropertyValue" ID="4a1" name="LDFLAGS" value="-wall -ansi"/>
+  <targets name="hello" depends="//@targets.2 //@targets.1" ID="5a2">
+    <tasks xsi:type="Echo" ID="9a3" message="skip"/>
+    <tasks xsi:type="Exec" ID="9a4" executable="skip"/>
+    <tasks xsi:type="Exec" ID="8a5" executable="$(CC) -o hello hello.o main.o $(LDFLAGS)"/>
+  </targets>
+  <targets name="hello.o" ID="10a2">
+    <tasks xsi:type="Exec" ID="12a5" executable="$(CC) -o hello.o -c hello.c $(CFLAGS)"/>
+  </targets>
+  <targets name="main.o" ID="13a2">
+    <tasks xsi:type="Echo" ID="16a3" message="$(CC) -o main.o -c main.c $(CFLAGS)"/>
+    <tasks xsi:type="Exec" ID="16a4" executable="$(CC) -o main.o -c main.c $(CFLAGS)"/>
+  </targets>
+  <targets name="clean" ID="17a2">
+    <tasks xsi:type="Echo" ID="18a3" message="rm -rf *.o"/>
+    <tasks xsi:type="Exec" ID="18a4" executable="rm -rf *.o"/>
+  </targets>
+  <targets name="mrproper" depends="//@targets.3" ID="19a2">
+    <tasks xsi:type="Exec" ID="21a5" executable="rm -rf $(EXEC)"/>
+  </targets>
+</Project>
