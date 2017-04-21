@@ -54,11 +54,12 @@ legend(10, factor * max(m2a.atlmeans$Default),
        col=c('blue', 'red', 'green', 'purple'), pch=c(16,2, 8, 12), bty='n', lty=1)
 dev.off()
 
+factor = 1e-9
 
 pdf(file="make2ant_sync.pdf", width=6, height=3)
 par(mar=c(4.3,4.0,0.3,0.3))
 size = m2as.means$Size
-plot(size, factor * m2as.atlmeans$SyncATL, type="n", xlab="Number of model elements", ylab="Propagate updates [ms]",
+plot(size, factor * m2as.atlmeans$SyncATL, type="n", xlab="Number of model elements", ylab="Propagate updates [s]",
      ylim=c(factor * min(m2as.means$UpdatesInc),factor * max(m2as.atlmeans$SyncATL)), log="xy")
 lines(size, factor * m2as.means$UpdatesBatch, col="blue")
 points(size, factor * m2as.means$UpdatesBatch, pch=16, col="blue")
