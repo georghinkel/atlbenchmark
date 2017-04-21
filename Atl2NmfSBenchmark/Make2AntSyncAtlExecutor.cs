@@ -25,10 +25,10 @@ namespace NMF.Synchronizations.ATLBenchmark
         /// <param name="workloadSize">The workload size</param>
         public static void Measure(int[] sizes, int iterations, int workloadSize)
         {
-            if (Directory.Exists("makeInputModels"))
-                Directory.Delete("makeInputModels", true);
-
             var times = new long[sizes.Length, iterations, 4];
+
+            // Run an iteration for the smallest input size to warm up the CLR
+            RunIteration(times, sizes[0], 0, 0, workloadSize);
 
             for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
             {
@@ -76,6 +76,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             times[sizeIdx, iteration, 1] = watch.Elapsed.Ticks * 100;
 
             var workload = MakeGenerator.GenerateChangeWorkload(makeModel, workloadSize);
+            SaveChanges(n, sizeIdx, iteration, CopyMakeModel(makeModel), workload);
             PlayBatchNet(times, n, sizeIdx, iteration, startRule, watch, ref inputBatchModelContainer, ref outputBatchModelContainer, workload);
             PlayIncremental(times, n, sizeIdx, iteration, watch, inputIncModelContainer, outputIncModelContainer, workload);
 
@@ -86,7 +87,18 @@ namespace NMF.Synchronizations.ATLBenchmark
             Make2Ant.OutputModelContainer = outputBatchModelContainer;
         }
 
+        private static void SaveChanges(int n, int sizeIdx, int iteration, Model model, List<MakeWorkloadAction> workload)
+        {
+            var outputRepository = new ModelRepository();
+            Directory.CreateDirectory("makeInputModelsSync\\" + n + "\\" + iteration);
 
+            for (int index = 0; index < workload.Count; index++)
+            {
+                var item = workload[index];
+                item.Perform(model);
+                outputRepository.Save(model, "makeInputModelsSync\\" + n + "\\" + iteration + "\\" + "inputModel" + index + ".xmi");
+            }
+        }
 
         private static void PlayIncremental(long[,,] times, int n, int sizeIdx, int iteration, Stopwatch watch, InputModelContainer inputModelContainer, OutputModelContainer outputModelContainer, List<MakeWorkloadAction> workload)
         {
@@ -96,10 +108,6 @@ namespace NMF.Synchronizations.ATLBenchmark
             Directory.CreateDirectory("makeOutputModelsIncSync\\" + n);
             Directory.CreateDirectory("makeOutputModelsIncSync\\" + n + "\\" + iteration);
 
-            Directory.CreateDirectory("makeInputModelsIncSync");
-            Directory.CreateDirectory("makeInputModelsIncSync\\" + n);
-            Directory.CreateDirectory("makeInputModelsIncSync\\" + n + "\\" + iteration);
-
             Make2Ant.InputModelContainer = inputModelContainer;
             Make2Ant.OutputModelContainer = outputModelContainer;
 
@@ -108,11 +116,14 @@ namespace NMF.Synchronizations.ATLBenchmark
             {
                 var item = workload[index];
                 item.Perform(inputModelContainer.IN);
-                outputRepository.Save(inputModelContainer.IN, "makeInputModelsIncSync\\" + n + "\\" + iteration + "\\" + "inputModel" + index + ".xmi");
+                var tempRepo = new ModelRepository();
+                tempRepo.Resolve("makeInputModelsSync\\" + n + "\\" + iteration + "\\" + "inputModel" + index + ".xmi");
                 outputRepository.Save(outputModelContainer.OUT, "makeOutputModelsIncSync\\" + n + "\\" + iteration + "\\" + "outputModel" + index + ".xmi");
             }
 
             watch.Stop();
+
+            Directory.Delete("makeOutputModelsIncSync", true);
 
             times[sizeIdx, iteration, 3] = watch.Elapsed.Ticks * 100;
         }
@@ -125,10 +136,6 @@ namespace NMF.Synchronizations.ATLBenchmark
             Directory.CreateDirectory("makeOutputModelsBatchSync\\" + n);
             Directory.CreateDirectory("makeOutputModelsBatchSync\\" + n + "\\" + iteration);
 
-            Directory.CreateDirectory("makeInputModelsBatchSync");
-            Directory.CreateDirectory("makeInputModelsBatchSync\\" + n);
-            Directory.CreateDirectory("makeInputModelsBatchSync\\" + n + "\\" + iteration);
-
             Make2Ant.InputModelContainer = inputModelContainer;
             Make2Ant.OutputModelContainer = outputModelContainer;
 
@@ -140,10 +147,13 @@ namespace NMF.Synchronizations.ATLBenchmark
 
                 outputModelContainer = new OutputModelContainer(new Model());
                 RerunBatchSynchronization(startRule, ref inputModelContainer, ref outputModelContainer);
-                outputRepository.Save(inputModelContainer.IN, "makeInputModelsBatchSync\\" + n + "\\" + iteration + "\\" + "outputModel" + index + ".xmi");
+                var tempRepo = new ModelRepository();
+                tempRepo.Resolve("makeInputModelsSync\\" + n + "\\" + iteration + "\\" + "outputModel" + index + ".xmi");
                 outputRepository.Save(outputModelContainer.OUT, "makeOutputModelsBatchSync\\" + n + "\\" + iteration + "\\" + "outputModel" + index + ".xmi");
             }
             watch.Stop();
+
+            Directory.Delete("makeOutputModelsBatchSync", true);
 
             times[sizeIdx, iteration, 2] = watch.Elapsed.Ticks * 100;
         }
@@ -236,7 +246,7 @@ namespace NMF.Synchronizations.ATLBenchmark
         /// </summary>
         private static void WriteResultsToCsv(int[] sizes, int iterations, long[,,] times)
         {
-            using (var sw = new StreamWriter("makeResults.csv"))
+            using (var sw = new StreamWriter("makeResultsSync.csv"))
             {
                 sw.WriteLine("Size;Run;InitBatch;InitInc;UpdatesBatch;UpdatesInc");
                 for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)

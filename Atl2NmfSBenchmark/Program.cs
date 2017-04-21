@@ -19,7 +19,7 @@ namespace NMF.Synchronizations.ATLBenchmark
             else if (args[0] == "Make2AntSyncAtl")
             {
                 //this executor was used for the performance comparison with SyncATL
-                Make2AntSyncAtlExecutor.Measure(sizes: new[] { 10, 100 }, iterations: 10, workloadSize: 20);
+                Make2AntSyncAtlExecutor.Measure(sizes: new[] { 10, 50, 100, 500, 1000, 5000, 10000 }, iterations: 10, workloadSize: 20);
             }
         }
     }

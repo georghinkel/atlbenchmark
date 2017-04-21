@@ -32,6 +32,9 @@ namespace NMF.Synchronizations.ATLBenchmark
 
             var times = new long[sizes.Length, iterations, 5];
 
+            // Run an iteration for the smallest input size to warm up the CLR
+            RunIteration(times, sizes[0], 0, 0, workloadSize);
+
             for (int sizeIdx = 0; sizeIdx < sizes.Length; sizeIdx++)
             {
                 var n = sizes[sizeIdx];

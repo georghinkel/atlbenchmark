@@ -21,14 +21,14 @@ public class SyncAtlRunner {
 	public static void main(String[] args) throws IOException, InterruptedException  {
 		
         //iterations
-		int n = 3;
-		int workloadSize = 100;
-		int[] sizes = new int[] {10,100};
+		int n = 10;
+		int workloadSize = 20;
+		int[] sizes = new int[] { 10, 50, 100, 500, 1000, 5000, 10000 };
 
 		long[][] syncTimes = new long[ sizes.length ][ n ];
 	
-		String basePath = "..\\makeInputModels\\";
-        String targetBasePath = "..\\targetModels\\";
+		String basePath = "..\\makeInputModelsSync\\";
+        String targetBasePath = "..\\makeTargetModels\\";
 		
 		for(int j=0; j<sizes.length; j++) {
 		
