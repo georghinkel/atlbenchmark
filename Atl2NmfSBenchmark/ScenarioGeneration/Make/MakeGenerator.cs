@@ -224,6 +224,7 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
                     workload.Add(new ChangeShellLineCommand()
                     {
                         ElementIndex = elementIndex,
+                        ShellCommandIndex = rand.Next(10),
                         NewCommand = "new shellLine command",
                         NewValue = "new shellLine value"
                     });

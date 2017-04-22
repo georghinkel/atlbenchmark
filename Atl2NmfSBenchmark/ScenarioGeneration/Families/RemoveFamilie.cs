@@ -26,19 +26,19 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Families
                 FamilyIndex = sourceModel.RootElements.Count - 1;
             }
 
-            var family = (IFamily) sourceModel.RootElements.ElementAt(FamilyIndex);
+            var family = (IFamily) sourceModel.RootElements[FamilyIndex];
 
             family.Father.Delete();
             family.Mother.Delete();
 
             for(int i=0; i < family.Sons.Count;)
             {
-                family.Sons.ElementAt(0).Delete();
+                family.Sons[0].Delete();
             }
 
             for (int i = 0; i < family.Daughters.Count;)
             {
-                family.Daughters.ElementAt(0).Delete();
+                family.Daughters[0].Delete();
             }
 
             family.Delete();

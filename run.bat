@@ -6,4 +6,5 @@ cd ..
 Atl2NmfSBenchmark\bin\x64\Release\ATLBenchmark.exe Make2AntSyncAtl
 cd AtlRunner
 java -jar syncatl.jar
+cd ..
 RScript createGraphs.r

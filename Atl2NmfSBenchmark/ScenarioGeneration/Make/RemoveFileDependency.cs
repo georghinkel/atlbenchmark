@@ -12,18 +12,25 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
     {
         public override void Perform(Model sourceModel)
         {
-            var dependencyFileDeps = sourceModel.Descendants().OfType<IFileDep>().ToList();
+            var makefile = sourceModel.RootElements[0] as Makefile;
 
-            if (dependencyFileDeps.Count == 0)
-                return;
-
-            if (ElementIndex >= dependencyFileDeps.Count)
+            if (ElementIndex >= makefile.Elements.Count)
             {
-                ElementIndex = dependencyFileDeps.Count - 1;
+                ElementIndex = 0;
             }
 
-            var dependencyFileDep = dependencyFileDeps[ElementIndex];
-            dependencyFileDep.Delete();
+            var rule = makefile.Elements[ElementIndex] as IRule;
+            while (rule == null && ElementIndex < makefile.Elements.Count - 1)
+            {
+                ElementIndex++;
+                rule = makefile.Elements[ElementIndex] as IRule;
+            }
+
+            if (rule == null) return;
+
+            var fileDep = rule.Dependencies.OfType<FileDep>().FirstOrDefault();
+            if (fileDep == null) return;
+            fileDep.Delete();
         }
 
         public override int ElementIndex { get; set; }

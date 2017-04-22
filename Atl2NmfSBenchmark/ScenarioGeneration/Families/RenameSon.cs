@@ -39,7 +39,7 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Families
                 SonIndex = family.Sons.Count - 1;
             }
 
-            family.Sons.ElementAt(SonIndex).FirstName = NewFirstName;
+            family.Sons[SonIndex].FirstName = NewFirstName;
         }
 
         public override int FamilyIndex { get; set; }

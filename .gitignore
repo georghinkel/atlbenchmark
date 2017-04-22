@@ -30,7 +30,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 
-!bin/x64/Release
+!Atl2NmfSBenchmark/bin/x64/Release/
 
 # Visual Studio 2015 cache/options directory
 .vs/

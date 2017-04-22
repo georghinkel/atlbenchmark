@@ -12,18 +12,23 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
     {
         public override void Perform(Model sourceModel)
         {
-            var shellLines = sourceModel.Descendants().OfType<IShellLine>().ToList();
+            var makefile = sourceModel.RootElements[0] as Makefile;
 
-            if (shellLines.Count == 0)
-                return;
-
-            if (ElementIndex >= shellLines.Count)
+            if (ElementIndex >= makefile.Elements.Count)
             {
-                ElementIndex = shellLines.Count - 1;
+                ElementIndex = 0;
             }
 
-            var shellLine = shellLines[ElementIndex];
-            shellLine.Delete();
+            var rule = makefile.Elements[ElementIndex] as IRule;
+            while (rule == null && ElementIndex < makefile.Elements.Count - 1)
+            {
+                ElementIndex++;
+                rule = makefile.Elements[ElementIndex] as IRule;
+            }
+
+            if (rule == null || rule.ShellLines.Count == 0) return;
+
+            rule.ShellLines[rule.ShellLines.Count - 1].Delete();
         }
 
         public override int ElementIndex { get; set; }

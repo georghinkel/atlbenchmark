@@ -13,17 +13,20 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
         public override void Perform(Model sourceModel)
         {
             var makefile = (Makefile)sourceModel.RootElements[0];
-            var macros = makefile.Elements.OfType<IMacro>().ToList();
 
-            if (macros.Count == 0)
-                return;
-
-            if (ElementIndex >= macros.Count)
+            if (ElementIndex >= makefile.Elements.Count)
             {
-                ElementIndex = macros.Count - 1;
+                ElementIndex = 0;
             }
 
-            var macro = macros[ElementIndex];
+            var macro = makefile.Elements[ElementIndex] as IMacro;
+            while (macro == null && ElementIndex < makefile.Elements.Count - 1)
+            {
+                ElementIndex++;
+                macro = makefile.Elements[ElementIndex] as IMacro;
+            }
+
+            if (macro == null) return;
             macro.Delete();
         }
 

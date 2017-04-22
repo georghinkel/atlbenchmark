@@ -28,7 +28,7 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Families
                 FamilyIndex = sourceModel.RootElements.Count - 1;
             }
 
-            var family = (IFamily)sourceModel.RootElements.ElementAt(FamilyIndex);
+            var family = (IFamily)sourceModel.RootElements[FamilyIndex];
             if (family.Sons.Count == 0)
                 return;
 
@@ -36,9 +36,8 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Families
             {
                 SonIndex = family.Sons.Count - 1;
             }
-
-            var son = family.Sons.ElementAt(SonIndex);
-            family.Sons.Remove(son);
+            
+            family.Sons.RemoveAt(SonIndex);
         }
 
         public override int FamilyIndex { get; set; }

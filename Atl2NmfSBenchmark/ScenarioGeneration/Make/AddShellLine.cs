@@ -17,15 +17,20 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
         public override void Perform(Model sourceModel)
         {
             var makefile = (Makefile)sourceModel.RootElements[0];
-            var rules = makefile.Elements.OfType<IRule>().ToList();
 
-            if (rules.Count == 0)
-                return;
-
-            if (ElementIndex >= rules.Count)
+            if (ElementIndex >= makefile.Elements.Count)
             {
-                ElementIndex = rules.Count - 1;
+                ElementIndex = 0;
             }
+
+            var rule = makefile.Elements[ElementIndex] as IRule;
+            while (rule == null && ElementIndex < makefile.Elements.Count - 1)
+            {
+                ElementIndex++;
+                rule = makefile.Elements[ElementIndex] as IRule;
+            }
+
+            if (rule == null) return;
 
             var shellLine = new ShellLine
             {
@@ -34,7 +39,7 @@ namespace NMF.Synchronizations.ATLBenchmark.ScenarioGeneration.Make
                 Display = false
             };
 
-            rules[ElementIndex].ShellLines.Add(shellLine);
+            rule.ShellLines.Add(shellLine);
         }
 
         public override int ElementIndex { get; set; }
